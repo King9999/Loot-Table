@@ -1,1 +1,22 @@
-{"itemName":"Rusty Dagger", "itemWeight": 900}
+{
+	"tables":
+	[
+		{
+			"tableWeight": 600,
+			"tableItems":
+			[
+				{"itemName":null, "itemWeight": 600},
+				{"itemName":"Rusty Dagger", "itemWeight": 400}
+			]	
+		},
+		{
+			"tableWeight": 400,
+			"tableItems":
+			[
+				{"itemName":null, "itemWeight": 500},
+				{"itemName":"Broadsword", "itemWeight": 400},
+				{"itemName":"Magic Shield", "itemWeight": 100}
+			]	
+		}
+	]
+}

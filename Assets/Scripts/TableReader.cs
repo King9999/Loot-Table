@@ -27,8 +27,15 @@ public class TableReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Item item = JsonUtility.FromJson<Item>(tableFile.text);
-        Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
+        Tables lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
+        //Item item = JsonUtility.FromJson<Item>(tableFile.text);
+        //Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
+        //Debug.Log("Name: " + tables[1].tableItems[0]. + " Weight: " + item.itemWeight);
+
+        foreach(Table table in lootTables.tables)
+        {
+            Debug.Log("Name: " + table.tableItems[1].itemName + " Weight: " + table.tableItems[1].itemWeight);
+        }
     }
 
     // Update is called once per frame
