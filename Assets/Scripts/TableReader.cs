@@ -27,7 +27,8 @@ public class TableReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Item item = JsonUtility.FromJson<Item>(tableFile.text);
+        Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
     }
 
     // Update is called once per frame
