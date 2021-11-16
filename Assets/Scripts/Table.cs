@@ -3,6 +3,6 @@
 [System.Serializable]
 public class Table
 {
-    public float tableWeight;      //weight category. Lower value = more valuable items. Data is from JSON file.
+    public float tableId;                //table identification. Each enemy encountered will drop an item from a table with the given ID.
     public Item[] tableItems;      //list of items contained in the table.
 }
