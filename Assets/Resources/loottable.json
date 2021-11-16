@@ -2,7 +2,7 @@
 	"tables":
 	[
 		{
-			"tableId": 1,
+			"tableId": 0,
 			"tableItems":
 			[
 				{"itemName":null, "itemWeight": 600},
@@ -14,7 +14,7 @@
 			]	
 		},
 		{
-			"tableId": 2,
+			"tableId": 1,
 			"tableItems":
 			[
 				{"itemName":null, "itemWeight": 500},
@@ -24,7 +24,7 @@
 			]	
 		},
 		{
-			"tableId": 3,
+			"tableId": 2,
 			"tableItems":
 			[
 				{"itemName":null, "itemWeight": 400},
@@ -33,7 +33,7 @@
 			]	
 		},
 		{
-			"tableId": 4,
+			"tableId": 3,
 			"tableItems":
 			[
 				{"itemName":null, "itemWeight": 400},
@@ -46,7 +46,7 @@
 			]	
 		},
 		{
-			"tableId": 5,
+			"tableId": 4,
 			"tableItems":
 			[
 				{"itemName":null, "itemWeight": 950},

@@ -18,6 +18,7 @@ public class TableReader : MonoBehaviour
     public TextAsset tableFile;
     public float itemWeightBonus;      //applied to itemWeight whenever an item isn't rolled.
     public string log;                 //record of all the rolls and items acquired.
+    Tables lootTables;
 
     //consts
     public float MaxWeight { get; } = 1000;
@@ -25,20 +26,63 @@ public class TableReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Tables lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
+        lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
+        itemWeightBonus = 0;
         //Item item = JsonUtility.FromJson<Item>(tableFile.text);
         //Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
         //Debug.Log("Name: " + tables[1].tableItems[0]. + " Weight: " + item.itemWeight);
 
-        foreach(Table table in lootTables.tables)
+        /*foreach(Table table in lootTables.tables)
         {
             Debug.Log("Name: " + table.tableItems[1].itemName + " Weight: " + table.tableItems[1].itemWeight);
-        }
+        }*/
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    //roll for an item from the given table ID.
+    public void GetItem(int tableId)
+    {
+        //get a random number
+        float randNum = Random.Range(0f, 1f);
+        Debug.Log("Rolled " + randNum);
+
+        //compare number against weight of each item in table
+        int i = lootTables.tables[tableId].tableItems.Length - 1;
+        bool itemFound = false;
+        string itemName = "";
+        while (!itemFound && i >= 0)
+        {
+            float dropChance = (lootTables.tables[tableId].tableItems[i].itemWeight + itemWeightBonus) / MaxWeight;
+            itemName = lootTables.tables[tableId].tableItems[i].itemName;
+            if (randNum <= dropChance)
+            {
+                //we found the item, generate it
+                float itemWeight = lootTables.tables[tableId].tableItems[i].itemWeight;
+                Debug.Log("Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance);
+                log += "Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance + "\n";
+                itemFound = true;
+            }
+            else
+            {
+                Debug.Log("Failed to drop " + itemName + ", moving to next item");
+                i--;
+            }
+        }
+
+        //if no item was found, then grant a bonus.
+        if (itemName == "")
+        {
+            itemWeightBonus++;
+        }
+        else
+        {
+            itemWeightBonus = 0;
+        }
+       
     }
 }
