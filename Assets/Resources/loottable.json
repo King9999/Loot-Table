@@ -5,7 +5,6 @@
 			"tableId": 0,
 			"tableItems":
 			[
-				{"itemName":null, "itemWeight": 600},
 				{"itemName":"Rusty Dagger", "itemWeight": 150},
 				{"itemName":"Dull Sword", "itemWeight": 100},
 				{"itemName":"Ragged Armor", "itemWeight": 75},
@@ -17,7 +16,6 @@
 			"tableId": 1,
 			"tableItems":
 			[
-				{"itemName":null, "itemWeight": 500},
 				{"itemName":"Heal Potion", "itemWeight": 300},
 				{"itemName":"Antidote", "itemWeight": 150},
 				{"itemName":"Bomb", "itemWeight": 50}
@@ -27,7 +25,6 @@
 			"tableId": 2,
 			"tableItems":
 			[
-				{"itemName":null, "itemWeight": 400},
 				{"itemName":"Broadsword", "itemWeight": 450},
 				{"itemName":"Magic Shield", "itemWeight": 150}
 			]	
@@ -36,7 +33,6 @@
 			"tableId": 3,
 			"tableItems":
 			[
-				{"itemName":null, "itemWeight": 400},
 				{"itemName":"Cursed Armor", "itemWeight": 250},
 				{"itemName":"Flame Boomerang", "itemWeight": 150},
 				{"itemName":"Poison Knife", "itemWeight": 100},
@@ -49,7 +45,6 @@
 			"tableId": 4,
 			"tableItems":
 			[
-				{"itemName":null, "itemWeight": 950},
 				{"itemName":"Berserker Axe", "itemWeight": 35},
 				{"itemName":"Philosopher's Stone", "itemWeight": 10},
 				{"itemName":"Holy Blade of Talos", "itemWeight": 5}

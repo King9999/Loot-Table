@@ -7,9 +7,9 @@ using UnityEngine;
  * 4. If an item was acquired, the bonus is reset to 0. 
  
 The project uses a weight system to determine drop rates. The maximum weight is 1000, and each item in the loot table is given
-an individual weight value. The tables themselves also have weight. The actual drop rate of an item is determined by
+an individual weight value. The actual drop rate of an item is determined by
 dividing its weight value by the maximum weight. E.g. an item with a weight of 10 has a drop rate of 10/1000 = 0.01, or 1%.
-The total item weight in each table should add up to the maximum weight.
+The total item weight in each table consists of all of the droppable items. Any values outside of the total means no items will drop.
  
  */
 
@@ -69,15 +69,17 @@ public class TableReader : MonoBehaviour
             }
             else
             {
-                Debug.Log("Failed to drop " + itemName + ", moving to next item");
+                //Debug.Log("Failed to drop " + itemName + ", moving to next item");
                 i--;
             }
         }
 
         //if no item was found, then grant a bonus.
-        if (itemName == "")
+        if (i <= 0)
         {
             itemWeightBonus++;
+            Debug.Log("No drop, adding a weight bonus. Current bonus is " + itemWeightBonus);
+            log += "No drop, weight bonus added. Current bonus is " + itemWeightBonus + "\n";
         }
         else
         {
