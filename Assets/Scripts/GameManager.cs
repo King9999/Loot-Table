@@ -24,13 +24,19 @@ public class GameManager : MonoBehaviour
 
         //once they're defeated, roll for an item
 
-        //update log
-        logText.text = reader.log;
+      
+
+        
+
         if (Time.time > currentTime + getItemTime)
         {
             //get new item
             currentTime = Time.time;
             reader.GetItem(0);
+
+            //update log & change UI size so that scrollbar gets smaller as more text is added.
+            logText.text = reader.log;
+            logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
         }
     }
 }
