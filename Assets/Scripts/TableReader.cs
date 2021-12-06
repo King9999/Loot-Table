@@ -54,11 +54,11 @@ public class TableReader : MonoBehaviour
         //compare number against weight of each item in table
         int i = lootTables.tables[tableId].tableItems.Length - 1;
         bool itemFound = false;
-        string itemName = "";
+        //string itemName = "";
         while (!itemFound && i >= 0)
         {
-            float dropChance = (lootTables.tables[tableId].tableItems[i].itemWeight + itemWeightBonus) / MaxWeight;
-            itemName = lootTables.tables[tableId].tableItems[i].itemName;
+            float dropChance = (lootTables.tables[tableId].tableItems[i].itemWeight + itemWeightBonus) / MaxWeight;     //drop chance = base drop rate + item weight bonus.
+            string itemName = lootTables.tables[tableId].tableItems[i].itemName;
             if (randNum <= dropChance)
             {
                 //we found the item, generate it
