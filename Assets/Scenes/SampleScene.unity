@@ -153,7 +153,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reader: {fileID: 1544933539}
-  enemy: {fileID: 0}
+  enemies1:
+  - {fileID: 6913954984891358751, guid: e328bb7e5fb7b60458c3ebb972662829, type: 3}
+  - {fileID: 3258594589504914120, guid: 10cc82bd34b3bd0468c4488c13dd79a7, type: 3}
+  - {fileID: 6567300337393009435, guid: 4fbac7dfe0f2b3e49a836a41401d3436, type: 3}
+  - {fileID: 1051536659388773615, guid: 6af365376201bb84294bd8dc05019fa7, type: 3}
+  - {fileID: 446489428019201435, guid: c347eb3a49d70e245866a230df910635, type: 3}
+  - {fileID: 6436525228277672219, guid: 732a80e46c86f8a4fbbe203d70eb98cf, type: 3}
+  - {fileID: 3992591098871374523, guid: d061c3d2be20d4e41976997cf1f48ff2, type: 3}
+  - {fileID: 1536462880757776721, guid: 6270d5c204a32db45ae85e985a94b364, type: 3}
+  - {fileID: 156970139190565442, guid: 505863633ab4f0d41b6c2b236b905916, type: 3}
+  - {fileID: 6406026659421074603, guid: 8751d85aff4a23e4e865a0324d7e4dbd, type: 3}
+  enemies2: []
+  enemies3: []
+  enemies4: []
+  enemies5: []
   currentTime: 0
   getItemTime: 1
   logText: {fileID: 198167438}
