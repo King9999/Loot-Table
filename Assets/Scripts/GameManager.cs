@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     public Enemy[] enemies4;    //level 31 to 40
     public Enemy[] enemies5;    //level 41 to 50
 
+    public AnimationClip slash;
+    public Animator slashAnim;
+
     public float currentTime;
     public float getItemTime = 1;       //time in seconds to generate item.
     public TextMeshProUGUI logText;     //displays drop info.
@@ -24,6 +27,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Instantiate(enemies1[0], new Vector3(0, 0, 0), Quaternion.identity);
+        //SpriteRenderer sr = enemies1[0].GetComponentInChildren<SpriteRenderer>();
+        //sr.color = new Color(1, 1, 1, 0.2f);
+        
     }
 
     // Update is called once per frame
@@ -33,13 +39,14 @@ public class GameManager : MonoBehaviour
 
         //once they're defeated, roll for an item
 
-      
-
         
+
+
 
         if (Time.time > currentTime + getItemTime)
         {
             //get new item
+            slashAnim.Play("Slash");        //TODO: set up a coroutine for this animation so that it plays first before anything else happens
             currentTime = Time.time;
             reader.GetItem(3);
 
