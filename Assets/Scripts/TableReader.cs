@@ -38,12 +38,6 @@ public class TableReader : MonoBehaviour
         }*/
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //roll for an item from the given table ID.
     public void GetItem(int tableId)
     {
