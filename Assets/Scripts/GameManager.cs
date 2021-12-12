@@ -115,7 +115,8 @@ public class GameManager : MonoBehaviour
     //removes on screen enemy and then performs a check for loot
     IEnumerator DestroyEnemy()
     {
-        slashAnim.Play("Slash");
+        slashAnim.Play("Slash");    //this needs to reset afterwards
+        //slash.Play();
 
         yield return new WaitForSeconds(0.5f);
 
@@ -124,8 +125,9 @@ public class GameManager : MonoBehaviour
         //hide the enemy object's sprite and roll for item
         SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
         sr.enabled = false;
+        yield return new WaitForSeconds(0.5f);
         //if (enemy != null)
-            //Destroy(enemy.gameObject);
+        //Destroy(enemy.gameObject);
 
         reader.GetItem(enemy.tableId);
 
