@@ -21,4 +21,51 @@ public class Enemy : MonoBehaviour
      * S - access tables 3 and high chance of 4
      */
 
+    public void GenerateTableID()
+    {
+        float randNum;          //used to check odds of accessing certain tables
+
+        switch(enemyRank)
+        {
+            case 'D':
+                tableId = 0;
+                break;
+
+            case 'C':
+                randNum = Random.Range(0f, 1f);
+                if (randNum <= 0.25f)    //25% chance of accessing table 0
+                    tableId = 0;
+                else
+                    tableId = 1;
+                break;
+
+            case 'B':
+                randNum = Random.Range(0f, 1f);
+                if (randNum <= 0.25f)
+                    tableId = 3;
+                else
+                    tableId = Random.Range(1, 3);   //access either table 1 or 2
+                break;
+
+            case 'A':
+                randNum = Random.Range(0f, 1f);
+                if (randNum <= 0.25f)
+                    tableId = 4;
+                else
+                    tableId = 3;
+                break;
+
+            case 'S':
+                randNum = Random.Range(0f, 1f);
+                if (randNum <= 0.25f)
+                    tableId = 3;
+                else
+                    tableId = 4;
+                break;
+
+            default:
+                break;
+        }
+    }
+
 }

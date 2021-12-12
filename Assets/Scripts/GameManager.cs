@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
             }*/
         }
 
-        if (timeToRoll)
+        /*if (timeToRoll)
         {
             //read the table based on the enemy that was defeated
             reader.GetItem(3);
@@ -78,14 +78,15 @@ public class GameManager : MonoBehaviour
             logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
 
             timeToRoll = false;
-        }
+        }*/
     }
 
     IEnumerator SpawnEnemy(Enemy[] enemyGroup)
     {
+        int enemySpriteIndex = Random.Range(0, enemyGroup.Length);
         if (enemy == null)
         {
-            enemy = Instantiate(enemyGroup[0], new Vector3(initPosition, 0, 0), Quaternion.identity);
+            enemy = Instantiate(enemyGroup[enemySpriteIndex], new Vector3(initPosition, 0, 0), Quaternion.identity);
         }
         else
         {
@@ -94,8 +95,13 @@ public class GameManager : MonoBehaviour
 
             //change the sprite of the existing enemy object
             SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
+            SpriteRenderer enemyGroupSr = enemyGroup[enemySpriteIndex].GetComponentInChildren<SpriteRenderer>();
+            sr.sprite = enemyGroupSr.sprite;
             sr.enabled = true;           
         }
+
+        //generate enemy table ID based on its rank
+        enemy.GenerateTableID();
 
         while (enemy.transform.position.x > 0)
         {
@@ -121,14 +127,13 @@ public class GameManager : MonoBehaviour
         //if (enemy != null)
             //Destroy(enemy.gameObject);
 
-        /*reader.GetItem(3);
+        reader.GetItem(enemy.tableId);
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.
         logText.text = reader.log;
-        logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);*/
+        logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
         enemySpawned = false;
-        timeToRoll = true;
+        //timeToRoll = true;
         coroutineRunning = false;
-        //yield return null;
     }
 }
