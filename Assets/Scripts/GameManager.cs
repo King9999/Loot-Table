@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI logText;     //displays drop info.
     const float initPosition = 1;
     bool enemySpawned;
+    bool timeToRoll;                //if true, check if loot generated.
+    bool coroutineRunning;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +36,8 @@ public class GameManager : MonoBehaviour
         //SpriteRenderer sr = enemies1[0].GetComponentInChildren<SpriteRenderer>();
         //sr.color = new Color(1, 1, 1, 0.2f);
         enemySpawned = false;
+        timeToRoll = false;
+        coroutineRunning = false;
     }
 
     // Update is called once per frame
@@ -45,7 +50,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(DestroyEnemy());
+            if (!coroutineRunning)  //if I don't have this condition, the coroutine will execute more than once and cause performance issues.
+            {
+                coroutineRunning = true;
+                StartCoroutine(DestroyEnemy());
+            }
             /*if (Time.time > currentTime + getItemTime)
             {
                 //get new item
@@ -57,6 +66,18 @@ public class GameManager : MonoBehaviour
                 logText.text = reader.log;
                 logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
             }*/
+        }
+
+        if (timeToRoll)
+        {
+            //read the table based on the enemy that was defeated
+            reader.GetItem(3);
+
+            //update log & change UI size so that scrollbar gets smaller as more text is added.
+            logText.text = reader.log;
+            logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
+
+            timeToRoll = false;
         }
     }
 
@@ -100,12 +121,14 @@ public class GameManager : MonoBehaviour
         //if (enemy != null)
             //Destroy(enemy.gameObject);
 
-        reader.GetItem(3);
+        /*reader.GetItem(3);
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.
         logText.text = reader.log;
-        logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
+        logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);*/
         enemySpawned = false;
+        timeToRoll = true;
+        coroutineRunning = false;
         //yield return null;
     }
 }
