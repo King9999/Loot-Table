@@ -11,11 +11,15 @@ public class GameManager : MonoBehaviour
     public Enemy enemy;
     //public Sprite playerSprite;
 
+    [Header("Objects")]
     public Enemy[] enemies1;    //level 1 to 10
     public Enemy[] enemies2;    //level 11 to 20
     public Enemy[] enemies3;    //level 21 to 30
     public Enemy[] enemies4;    //level 31 to 40
     public Enemy[] enemies5;    //level 41 to 50
+    public GameObject lootPrefab;     //appears when item is generated.
+    GameObject loot;
+
 
     public AnimationClip slash;
     public Animator slashAnim;
@@ -26,9 +30,13 @@ public class GameManager : MonoBehaviour
     const float initPosition = 1;
     bool enemySpawned;
     bool timeToRoll;                //if true, check if loot generated.
-    bool coroutineRunning;
+
+    //coroutine toggles
+    bool coroutineRunning;              //controls DestroyEnemy
     bool spawnEnemyCoroutineRunning;
+    bool dropLootCoroutineRunning;
     
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +48,12 @@ public class GameManager : MonoBehaviour
         timeToRoll = false;
         coroutineRunning = false;
         spawnEnemyCoroutineRunning = false;
+        dropLootCoroutineRunning = false;
+
+        //loot setup. It starts invisible until loot is generated.
+        loot = Instantiate(lootPrefab, Vector3.zero, Quaternion.identity);
+        SpriteRenderer lootSr = loot.GetComponentInChildren<SpriteRenderer>();
+        lootSr.enabled = false;
     }
 
     // Update is called once per frame
@@ -61,6 +75,7 @@ public class GameManager : MonoBehaviour
                 coroutineRunning = true;
                 StartCoroutine(DestroyEnemy());
             }
+
             /*if (Time.time > currentTime + getItemTime)
             {
                 //get new item
@@ -110,9 +125,11 @@ public class GameManager : MonoBehaviour
         //generate enemy table ID based on its rank
         enemy.GenerateTableID();
 
+        //TODO: prevent the first enemy from moving too far past the target position. This only happens with the first enemy,
+        //and has to do with delta time being 0 at the beginning.
         while (enemy.transform.position.x > 0)
         {
-            enemy.transform.position = new Vector3(enemy.transform.position.x - 0.05f, enemy.transform.position.y, 0);
+            enemy.transform.position = new Vector3(enemy.transform.position.x - (10 * Time.deltaTime), enemy.transform.position.y, 0);
             yield return null;
         }
 
@@ -127,18 +144,26 @@ public class GameManager : MonoBehaviour
         slashAnim.Play("Slash");    
         //slash.Play();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         //reset animation?
 
         //hide the enemy object's sprite and roll for item
         SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
         sr.enabled = false;
-        yield return new WaitForSeconds(0.5f);
-        //if (enemy != null)
-        //Destroy(enemy.gameObject);
-
+        //yield return new WaitForSeconds(0.5f);
+       
         reader.GetItem(enemy.tableId);
+
+        //if item is generated, call loot coroutine
+        if (reader.ItemFound)
+        {
+            if (!dropLootCoroutineRunning)
+            {
+                dropLootCoroutineRunning = true;
+                StartCoroutine(DropLoot());
+            }
+        }
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.
         logText.text = reader.log;
@@ -146,5 +171,26 @@ public class GameManager : MonoBehaviour
         enemySpawned = false;
         //timeToRoll = true;
         coroutineRunning = false;
+    }
+
+    IEnumerator DropLoot()
+    {
+        //show loot object. 
+        loot.transform.position = Vector3.zero;     //reset position
+        SpriteRenderer lootSr = loot.GetComponentInChildren<SpriteRenderer>();
+        lootSr.enabled = true;
+
+        //loot animates by moving up for a duration before hiding again.
+        float duration = 1;
+        float currentTime = Time.time;
+        while (Time.time < currentTime + duration)
+        {
+            loot.transform.position = new Vector3(loot.transform.position.x, loot.transform.position.y + (2 * Time.deltaTime), 0);
+            yield return null;
+        }
+
+        //loot disappears until next time.
+        lootSr.enabled = false;
+        dropLootCoroutineRunning = false;
     }
 }

@@ -17,8 +17,9 @@ public class TableReader : MonoBehaviour
 {
     public TextAsset tableFile;
     public float itemWeightBonus;      //applied to itemWeight whenever an item isn't rolled.
-    public string log;                 //record of all the rolls and items acquired.
-    Tables lootTables;
+    public string log;                 //record of item weight bonuses and items acquired.
+    Tables lootTables;    
+    public bool ItemFound { get; set; } 
 
     //consts
     public float MaxWeight { get; } = 1000;
@@ -28,6 +29,7 @@ public class TableReader : MonoBehaviour
     {
         lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
         itemWeightBonus = 0;
+        ItemFound = false;
         //Item item = JsonUtility.FromJson<Item>(tableFile.text);
         //Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
         //Debug.Log("Name: " + tables[1].tableItems[0]. + " Weight: " + item.itemWeight);
@@ -47,9 +49,9 @@ public class TableReader : MonoBehaviour
 
         //compare number against weight of each item in table
         int i = lootTables.tables[tableId].tableItems.Length - 1;
-        bool itemFound = false;
+        ItemFound = false;
         //string itemName = "";
-        while (!itemFound && i >= 0)
+        while (!ItemFound && i >= 0)
         {
             float dropChance = (lootTables.tables[tableId].tableItems[i].itemWeight + itemWeightBonus) / MaxWeight;     //drop chance = base drop rate + item weight bonus.
             string itemName = lootTables.tables[tableId].tableItems[i].itemName;
@@ -59,7 +61,7 @@ public class TableReader : MonoBehaviour
                 float itemWeight = lootTables.tables[tableId].tableItems[i].itemWeight;
                 Debug.Log("Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance);
                 log += "Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance + "\n";
-                itemFound = true;
+                ItemFound = true;
             }
             else
             {
@@ -69,7 +71,7 @@ public class TableReader : MonoBehaviour
         }
 
         //if no item was found, then grant a bonus.
-        if (i <= 0)
+        if (!ItemFound)
         {
             itemWeightBonus++;
             Debug.Log("No drop, adding a weight bonus. Current bonus is " + itemWeightBonus);
