@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     bool enemySpawned;
     bool timeToRoll;                //if true, check if loot generated.
     bool coroutineRunning;
+    bool spawnEnemyCoroutineRunning;
     
 
     // Start is called before the first frame update
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         enemySpawned = false;
         timeToRoll = false;
         coroutineRunning = false;
+        spawnEnemyCoroutineRunning = false;
     }
 
     // Update is called once per frame
@@ -46,7 +48,11 @@ public class GameManager : MonoBehaviour
         //enemy appears and shifts to the centre of the screen. Use coroutine
         if (!enemySpawned)
         {
-            StartCoroutine(SpawnEnemy(enemies1));
+            if (!spawnEnemyCoroutineRunning)
+            {
+                spawnEnemyCoroutineRunning = true;
+                StartCoroutine(SpawnEnemy(enemies1));
+            }
         }
         else
         {
@@ -90,14 +96,15 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //reset its position
-            enemy.transform.position = new Vector3(initPosition, 0, 0);
-
             //change the sprite of the existing enemy object
             SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
             SpriteRenderer enemyGroupSr = enemyGroup[enemySpriteIndex].GetComponentInChildren<SpriteRenderer>();
             sr.sprite = enemyGroupSr.sprite;
-            sr.enabled = true;           
+            
+
+            //reset its position
+            enemy.transform.position = new Vector3(initPosition, 0, 0);
+            sr.enabled = true;
         }
 
         //generate enemy table ID based on its rank
@@ -110,12 +117,14 @@ public class GameManager : MonoBehaviour
         }
 
         enemySpawned = true;
+        spawnEnemyCoroutineRunning = false;
     }
 
     //removes on screen enemy and then performs a check for loot
     IEnumerator DestroyEnemy()
     {
-        slashAnim.Play("Slash");    //this needs to reset afterwards
+        yield return new WaitForSeconds(0.5f);  //added a slight delay before animation plays so that the enemy can "live" for a bit
+        slashAnim.Play("Slash");    
         //slash.Play();
 
         yield return new WaitForSeconds(0.5f);
