@@ -163,6 +163,8 @@ public class GameManager : MonoBehaviour
                 dropLootCoroutineRunning = true;
                 StartCoroutine(DropLoot());
             }
+            yield return new WaitForSeconds(1f);
+
         }
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.

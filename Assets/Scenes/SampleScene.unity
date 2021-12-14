@@ -169,6 +169,7 @@ MonoBehaviour:
   enemies3: []
   enemies4: []
   enemies5: []
+  lootPrefab: {fileID: 7322781200621972208, guid: 2ae0d6e84b39e344d99f7e3e0b867c4d, type: 3}
   slash: {fileID: 7400000, guid: 754217ff9354f0e45a151a5befa48d8f, type: 2}
   slashAnim: {fileID: 442364979}
   currentTime: 0
@@ -222,7 +223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -8.3307, y: 0.0011749268}
+  m_AnchoredPosition: {x: -8.3307, y: 0.0011138916}
   m_SizeDelta: {x: 227, y: 202.81}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &198167438
@@ -807,7 +808,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1380304827}
   m_HandleRect: {fileID: 1380304826}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
