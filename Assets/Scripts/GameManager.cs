@@ -75,7 +75,42 @@ public class GameManager : MonoBehaviour
         tableAccessUI.text = "Accessible Tables: ";
 
         //rank and array setup
-        selectedEnemies = enemiesS;
+        switch(RankManager.instance.selectedRank)
+        {
+            case RankManager.Rank.D:
+                selectedEnemies = enemiesD;
+                enemyRankUI.text = "Enemy Rank: D";
+                tableAccessUI.text = "Accessible Tables: 0";
+                break;
+
+            case RankManager.Rank.C:
+                selectedEnemies = enemiesC;
+                enemyRankUI.text = "Enemy Rank: C";
+                tableAccessUI.text = "Accessible Tables: 0 (low chance), 1";
+                break;
+
+            case RankManager.Rank.B:
+                selectedEnemies = enemiesB;
+                enemyRankUI.text = "Enemy Rank: B";
+                tableAccessUI.text = "Accessible Tables: 1, 2, 3 (low chance)";
+                break;
+
+            case RankManager.Rank.A:
+                selectedEnemies = enemiesA;
+                enemyRankUI.text = "Enemy Rank: A";
+                tableAccessUI.text = "Accessible Tables: 3, 4 (low chance)";
+                break;
+
+            case RankManager.Rank.S:
+                selectedEnemies = enemiesS;
+                enemyRankUI.text = "Enemy Rank: S";
+                tableAccessUI.text = "Accessible Tables: 3 (low chance), 4";
+                break;
+
+            default:
+                break;
+        }
+        //selectedEnemies = enemiesS;
     }
 
     // Update is called once per frame
@@ -100,8 +135,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Coroutines
     IEnumerator SpawnEnemy(Enemy[] enemyGroup)
     {
+        yield return new WaitForSeconds(0.1f);
         int enemySpriteIndex = Random.Range(0, enemyGroup.Length);
         if (enemy == null)
         {
@@ -217,5 +254,11 @@ public class GameManager : MonoBehaviour
         //loot disappears until next time.
         lootSr.enabled = false;
         dropLootCoroutineRunning = false;
+    }
+    #endregion
+
+    public void OnBackButtonClicked()
+    {
+        SceneManager.LoadScene("Rank Select");
     }
 }

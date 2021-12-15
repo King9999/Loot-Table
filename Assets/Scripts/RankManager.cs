@@ -16,15 +16,55 @@ public class RankManager : MonoBehaviour
     public Button rankSButton;
     public TextMeshProUGUI rankSelect;
 
-    // Start is called before the first frame update
-    void Start()
+    public enum Rank
     {
-        
+        D, C, B, A, S
     }
 
-    // Update is called once per frame
-    void Update()
+    public Rank selectedRank;
+
+    public static RankManager instance;
+    private void Awake()
     {
-        
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);    //Only want one instance of rank manager
+            return;
+        }
+
+        instance = this;
+
+    }
+   
+
+    public void OnRankDButtonClicked()
+    {
+        Debug.Log("Pressed rank D");
+        selectedRank = Rank.D;
+        SceneManager.LoadScene("Game");
+    }
+
+    public void OnRankCButtonClicked()
+    {
+        selectedRank = Rank.C;
+        SceneManager.LoadScene("Game");
+    }
+
+    public void OnRankBButtonClicked()
+    {
+        selectedRank = Rank.B;
+        SceneManager.LoadScene("Game");
+    }
+
+    public void OnRankAButtonClicked()
+    {
+        selectedRank = Rank.A;
+        SceneManager.LoadScene("Game");
+    }
+
+    public void OnRankSButtonClicked()
+    {
+        selectedRank = Rank.S;
+        SceneManager.LoadScene("Game");
     }
 }
