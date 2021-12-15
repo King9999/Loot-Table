@@ -30,22 +30,27 @@ public class TableReader : MonoBehaviour
         lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
         itemWeightBonus = 0;
         ItemFound = false;
-        //Item item = JsonUtility.FromJson<Item>(tableFile.text);
-        //Debug.Log("Name: " + item.itemName + " Weight: " + item.itemWeight);
-        //Debug.Log("Name: " + tables[1].tableItems[0]. + " Weight: " + item.itemWeight);
-
-        /*foreach(Table table in lootTables.tables)
-        {
-            Debug.Log("Name: " + table.tableItems[1].itemName + " Weight: " + table.tableItems[1].itemWeight);
-        }*/
     }
 
-    //roll for an item from the given table ID.
-    public void GetItem(int tableId)
+    //roll for an item from the given table ID. Optional parameter is used for rare enemy encounters.
+    public void GetItem(int tableId, bool luckyRollEnabled = false)
     {
         //get a random number
         float randNum = Random.Range(0f, 1f);
         Debug.Log("Rolled " + randNum);
+        log += "Rolled " + randNum + "\n";
+
+        if (luckyRollEnabled)
+        {
+            //get a second random number and compare the two values. Take the lower value.
+            float randNum2 = Random.Range(0f, 1f);
+            if (randNum2 < randNum)
+            {
+                randNum = randNum2;
+                Debug.Log("Lucky roll! Value is now " + randNum);
+                log += "Lucky roll! Value is now " + randNum + "\n";
+            } 
+        }
 
         //compare number against weight of each item in table
         int i = lootTables.tables[tableId].tableItems.Length - 1;
@@ -73,11 +78,22 @@ public class TableReader : MonoBehaviour
         //if no item was found, then grant a bonus.
         if (!ItemFound)
         {
-            itemWeightBonus++;
-            Debug.Log("No drop, adding a weight bonus. Current bonus is " + itemWeightBonus);
-            log += "No drop, weight bonus added. Current bonus is " + itemWeightBonus + "\n";
+            if (luckyRollEnabled)
+            {
+                //additional bonus for encountering rare enemy
+                itemWeightBonus += 3;
+                Debug.Log("No drop, 3x weight bonus added. Current bonus: " + itemWeightBonus);
+                log += "No drop, 3x weight bonus added. Current bonus: " + itemWeightBonus + "\n";
+            }
+            else
+            {
+                itemWeightBonus++;
+                Debug.Log("No drop, adding a weight bonus. Current bonus: " + itemWeightBonus);
+                log += "No drop, weight bonus added. Current bonus: " + itemWeightBonus + "\n";
+            }
+            
         }
-        else
+        else //item was found, reset bonus
         {
             itemWeightBonus = 0;
         }

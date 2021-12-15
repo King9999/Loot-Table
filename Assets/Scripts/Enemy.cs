@@ -5,11 +5,9 @@ public class Enemy : MonoBehaviour
 {
     public char enemyRank;          //determines which tables are accessible. Ranks from lowest to highest are D, C, B, A, and S.
     public int tableId;             //the enemy's drop table. It's determined by enemy level.
-    //public Sprite enemySprite;
     public bool isRare;             //if true, then two rolls occur for an item. Better result is picked.
 
     //consts
-    public int MaxLevel { get; } = 50;
     public int MaxTableId { get; } = 5;
 
     /* Rank info
@@ -66,6 +64,15 @@ public class Enemy : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void CheckEnemyRarity()
+    {
+        //randomly check if enemy is rare. If true, they will have a different colour.
+        float randNum = Random.Range(0f, 1f);
+
+        if (randNum <= 0.1f)
+            isRare = true;
     }
 
 }

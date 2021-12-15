@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /* Enemies are defeated, and items have a chance to drop. Sometimes, a rare version of an enemy appears, which
  * allows two chances for an item to drop. The better roll is picked, and if nothing drops, the added weight bonus is
@@ -9,18 +11,26 @@ public class GameManager : MonoBehaviour
 {
     public TableReader reader;
     public Enemy enemy;
-    //public Sprite playerSprite;
 
     [Header("Objects")]
-    public Enemy[] enemies1;    //level 1 to 10
-    public Enemy[] enemies2;    //level 11 to 20
-    public Enemy[] enemies3;    //level 21 to 30
-    public Enemy[] enemies4;    //level 31 to 40
-    public Enemy[] enemies5;    //level 41 to 50
+    public Enemy[] enemiesD;    // The letters next to the array names are the enemy ranks. Ranks go from D to S, D is the worst, S is the best.
+    public Enemy[] enemiesC;    
+    public Enemy[] enemiesB;    
+    public Enemy[] enemiesA;    
+    public Enemy[] enemiesS;    
     public GameObject lootPrefab;     //appears when item is generated.
     GameObject loot;
+    public GameObject auraPrefab;     //used to indicate rare enemy
+    GameObject aura;
 
+    [Header("UI")]
+    public TextMeshProUGUI enemyRankUI;
+    public TextMeshProUGUI dropResultUI;    //name of the item that dropped
+    public TextMeshProUGUI itemWeightUI;    //shows the weight of the last dropped item.
+    public TextMeshProUGUI tableAccessUI;   
+    public Button backButton;               //used to go back to rank scene
 
+    [Header("--------------")]
     public AnimationClip slash;
     public Animator slashAnim;
 
@@ -32,7 +42,7 @@ public class GameManager : MonoBehaviour
     bool timeToRoll;                //if true, check if loot generated.
 
     //coroutine toggles
-    bool coroutineRunning;              //controls DestroyEnemy
+    bool destroyEnemyCoroutineRunning;              
     bool spawnEnemyCoroutineRunning;
     bool dropLootCoroutineRunning;
     
@@ -41,12 +51,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //enemy = Instantiate(enemies1[0], new Vector3(initPosition, 0, 0), Quaternion.identity);
-        //SpriteRenderer sr = enemies1[0].GetComponentInChildren<SpriteRenderer>();
-        //sr.color = new Color(1, 1, 1, 0.2f);
         enemySpawned = false;
         timeToRoll = false;
-        coroutineRunning = false;
+        destroyEnemyCoroutineRunning = false;
         spawnEnemyCoroutineRunning = false;
         dropLootCoroutineRunning = false;
 
@@ -54,6 +61,14 @@ public class GameManager : MonoBehaviour
         loot = Instantiate(lootPrefab, Vector3.zero, Quaternion.identity);
         SpriteRenderer lootSr = loot.GetComponentInChildren<SpriteRenderer>();
         lootSr.enabled = false;
+
+        //aura setup
+        aura = Instantiate(auraPrefab, Vector3.zero, Quaternion.identity);
+        SpriteRenderer auraSr = aura.GetComponentInChildren<SpriteRenderer>();
+        auraSr.enabled = false;
+
+        //UI setup
+        enemyRankUI.text = "Enemy Rank: ";      //TODO: complete this once rank screen is completed.
     }
 
     // Update is called once per frame
@@ -65,41 +80,17 @@ public class GameManager : MonoBehaviour
             if (!spawnEnemyCoroutineRunning)
             {
                 spawnEnemyCoroutineRunning = true;
-                StartCoroutine(SpawnEnemy(enemies1));
+                StartCoroutine(SpawnEnemy(enemiesD));
             }
         }
         else
         {
-            if (!coroutineRunning)  //if I don't have this condition, the coroutine will execute more than once and cause performance issues.
+            if (!destroyEnemyCoroutineRunning)  //if I don't have this condition, the coroutine will execute more than once and cause performance issues.
             {
-                coroutineRunning = true;
+                destroyEnemyCoroutineRunning = true;
                 StartCoroutine(DestroyEnemy());
             }
-
-            /*if (Time.time > currentTime + getItemTime)
-            {
-                //get new item
-                slashAnim.Play("Slash");        //TODO: set up a coroutine for this animation so that it plays first before anything else happens
-                currentTime = Time.time;
-                reader.GetItem(3);
-
-                //update log & change UI size so that scrollbar gets smaller as more text is added.
-                logText.text = reader.log;
-                logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
-            }*/
         }
-
-        /*if (timeToRoll)
-        {
-            //read the table based on the enemy that was defeated
-            reader.GetItem(3);
-
-            //update log & change UI size so that scrollbar gets smaller as more text is added.
-            logText.text = reader.log;
-            logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
-
-            timeToRoll = false;
-        }*/
     }
 
     IEnumerator SpawnEnemy(Enemy[] enemyGroup)
@@ -119,7 +110,20 @@ public class GameManager : MonoBehaviour
 
             //reset its position
             enemy.transform.position = new Vector3(initPosition, 0, 0);
+            aura.transform.position = enemy.transform.position;
             sr.enabled = true;
+        }
+
+        //check enemy rarity
+        enemy.CheckEnemyRarity();
+        //enemy.isRare = true;
+        if (enemy.isRare)
+        {
+            //give the enemy an "aura"
+            SpriteRenderer auraSr = aura.GetComponent<SpriteRenderer>();
+            SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
+            auraSr.sprite = sr.sprite;
+            auraSr.enabled = true;
         }
 
         //generate enemy table ID based on its rank
@@ -130,6 +134,7 @@ public class GameManager : MonoBehaviour
         while (enemy.transform.position.x > 0)
         {
             enemy.transform.position = new Vector3(enemy.transform.position.x - (10 * Time.deltaTime), enemy.transform.position.y, 0);
+            aura.transform.position = enemy.transform.position;
             yield return null;
         }
 
@@ -146,14 +151,21 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        //reset animation?
-
         //hide the enemy object's sprite and roll for item
         SpriteRenderer sr = enemy.GetComponentInChildren<SpriteRenderer>();
         sr.enabled = false;
-        //yield return new WaitForSeconds(0.5f);
-       
-        reader.GetItem(enemy.tableId);
+
+        if (enemy.isRare)
+        {
+            //hide the aura and do a special roll 
+            SpriteRenderer auraSr = aura.GetComponent<SpriteRenderer>();
+            auraSr.enabled = false;
+
+            reader.GetItem(enemy.tableId, true);
+            enemy.isRare = false;   //enemy object is never deleted, so this step must be done.
+        }
+        else
+            reader.GetItem(enemy.tableId);
 
         //if item is generated, call loot coroutine
         if (reader.ItemFound)
@@ -163,8 +175,7 @@ public class GameManager : MonoBehaviour
                 dropLootCoroutineRunning = true;
                 StartCoroutine(DropLoot());
             }
-            yield return new WaitForSeconds(1f);
-
+            yield return new WaitForSeconds(1f);    //giving time for loot sprite to complete animation before next enemy is generated.
         }
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.
@@ -172,7 +183,7 @@ public class GameManager : MonoBehaviour
         logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
         enemySpawned = false;
         //timeToRoll = true;
-        coroutineRunning = false;
+        destroyEnemyCoroutineRunning = false;
     }
 
     IEnumerator DropLoot()
