@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
         tableAccessUI.text = "Accessible Tables: ";
 
         //rank and array setup
-        selectedEnemies = enemiesD;
+        selectedEnemies = enemiesS;
     }
 
     // Update is called once per frame
