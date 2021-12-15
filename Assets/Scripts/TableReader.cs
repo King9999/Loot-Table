@@ -19,7 +19,9 @@ public class TableReader : MonoBehaviour
     public float itemWeightBonus;      //applied to itemWeight whenever an item isn't rolled.
     public string log;                 //record of item weight bonuses and items acquired.
     Tables lootTables;    
-    public bool ItemFound { get; set; } 
+    public bool itemFound { get; set; }
+    public string itemName { get; set; }
+    public float itemWeight { get; set; }
 
     //consts
     public float MaxWeight { get; } = 1000;
@@ -29,7 +31,7 @@ public class TableReader : MonoBehaviour
     {
         lootTables = JsonUtility.FromJson<Tables>(tableFile.text);
         itemWeightBonus = 0;
-        ItemFound = false;
+        itemFound = false;
     }
 
     //roll for an item from the given table ID. Optional parameter is used for rare enemy encounters.
@@ -54,19 +56,19 @@ public class TableReader : MonoBehaviour
 
         //compare number against weight of each item in table
         int i = lootTables.tables[tableId].tableItems.Length - 1;
-        ItemFound = false;
+        itemFound = false;
         //string itemName = "";
-        while (!ItemFound && i >= 0)
+        while (!itemFound && i >= 0)
         {
             float dropChance = (lootTables.tables[tableId].tableItems[i].itemWeight + itemWeightBonus) / MaxWeight;     //drop chance = base drop rate + item weight bonus.
-            string itemName = lootTables.tables[tableId].tableItems[i].itemName;
+            itemName = lootTables.tables[tableId].tableItems[i].itemName;
             if (randNum <= dropChance)
             {
                 //we found the item, generate it
-                float itemWeight = lootTables.tables[tableId].tableItems[i].itemWeight;
+                itemWeight = lootTables.tables[tableId].tableItems[i].itemWeight;
                 Debug.Log("Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance);
                 log += "Enemy dropped " + itemName + ", Weight: " + itemWeight + ", Weight Bonus: " + itemWeightBonus + ", Drop Rate: " + dropChance + "\n";
-                ItemFound = true;
+                itemFound = true;
             }
             else
             {
@@ -76,7 +78,7 @@ public class TableReader : MonoBehaviour
         }
 
         //if no item was found, then grant a bonus.
-        if (!ItemFound)
+        if (!itemFound)
         {
             if (luckyRollEnabled)
             {
@@ -97,6 +99,8 @@ public class TableReader : MonoBehaviour
         {
             itemWeightBonus = 0;
         }
-       
+
+        //add a line to make the log more readable
+        log += "---------------------\n"; 
     }
 }

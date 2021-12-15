@@ -10,14 +10,15 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public TableReader reader;
-    public Enemy enemy;
+    Enemy enemy;
 
     [Header("Objects")]
     public Enemy[] enemiesD;    // The letters next to the array names are the enemy ranks. Ranks go from D to S, D is the worst, S is the best.
     public Enemy[] enemiesC;    
     public Enemy[] enemiesB;    
     public Enemy[] enemiesA;    
-    public Enemy[] enemiesS;    
+    public Enemy[] enemiesS;
+    public Enemy[] selectedEnemies;     //contains the chosen enemies the player picked.
     public GameObject lootPrefab;     //appears when item is generated.
     GameObject loot;
     public GameObject auraPrefab;     //used to indicate rare enemy
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI logText;     //displays drop info.
     const float initPosition = 1;
     bool enemySpawned;
-    bool timeToRoll;                //if true, check if loot generated.
+    //bool timeToRoll;                //if true, check if loot generated.
 
     //coroutine toggles
     bool destroyEnemyCoroutineRunning;              
@@ -52,7 +53,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         enemySpawned = false;
-        timeToRoll = false;
+        //timeToRoll = false;
         destroyEnemyCoroutineRunning = false;
         spawnEnemyCoroutineRunning = false;
         dropLootCoroutineRunning = false;
@@ -69,6 +70,12 @@ public class GameManager : MonoBehaviour
 
         //UI setup
         enemyRankUI.text = "Enemy Rank: ";      //TODO: complete this once rank screen is completed.
+        dropResultUI.text = "--";
+        //itemWeightUI.text = "--";
+        tableAccessUI.text = "Accessible Tables: ";
+
+        //rank and array setup
+        selectedEnemies = enemiesD;
     }
 
     // Update is called once per frame
@@ -80,7 +87,7 @@ public class GameManager : MonoBehaviour
             if (!spawnEnemyCoroutineRunning)
             {
                 spawnEnemyCoroutineRunning = true;
-                StartCoroutine(SpawnEnemy(enemiesD));
+                StartCoroutine(SpawnEnemy(selectedEnemies));
             }
         }
         else
@@ -147,7 +154,6 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);  //added a slight delay before animation plays so that the enemy can "live" for a bit
         slashAnim.Play("Slash");    
-        //slash.Play();
 
         yield return new WaitForSeconds(0.3f);
 
@@ -168,8 +174,10 @@ public class GameManager : MonoBehaviour
             reader.GetItem(enemy.tableId);
 
         //if item is generated, call loot coroutine
-        if (reader.ItemFound)
+        if (reader.itemFound)
         {
+            dropResultUI.text = "Found " + reader.itemName;
+            //itemWeightUI.text = "Weight: " + (reader.itemWeight + reader.itemWeightBonus).ToString() + " / 1000";
             if (!dropLootCoroutineRunning)
             {
                 dropLootCoroutineRunning = true;
@@ -177,12 +185,16 @@ public class GameManager : MonoBehaviour
             }
             yield return new WaitForSeconds(1f);    //giving time for loot sprite to complete animation before next enemy is generated.
         }
+        else
+        {
+            dropResultUI.text = "No drop";
+            //itemWeightUI.text = "--";
+        }
 
         //update log & change UI size so that scrollbar gets smaller as more text is added.
         logText.text = reader.log;
         logText.rectTransform.sizeDelta = new Vector2(logText.rectTransform.rect.width, logText.rectTransform.rect.height + logText.fontSize);
         enemySpawned = false;
-        //timeToRoll = true;
         destroyEnemyCoroutineRunning = false;
     }
 
